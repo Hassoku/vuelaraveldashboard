@@ -19,11 +19,17 @@ Product
   </div>
   <div class="mb-3">
     <label for="exampleInputEmail1" class="form-label">Product Category</label>
-    <select name="category_id" class="form-control" v-model="product.category">
+    <!-- <select name="category_id" class="form-control" v-model="product.category">
        <option>Select Category</option>
        <option v-for="category in categories" :key="category.id" :value="category.id">{{category.category}}</option>
 
-    </select>
+    </select> -->
+     <multiselect v-model="productcategory" :options="categories" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="Select Category" label="category" track-by="name" :preselect-first="true">
+   
+  </multiselect>
+     <div>
+
+  </div>
 
   </div>
    <div class="mb-3">
@@ -62,12 +68,12 @@ Product
             </tr>
           </thead>
           <tbody>
-            <tr>
+            <tr v-for="product in products" :key="product.id">
               <td>1,015</td>
-              <td>random</td>
-              <td>tabular</td>
-              <td>information</td>
-              <td>text</td>
+              <td>{{product.product_name}}</td>
+              <td ><span v-for="cat in product.categories" :key="cat.id">{{cat.category}}</span></td>
+              <td>{{product.price}}</td>
+              <td> <button class="btn btn-danger" @click="deleteProduct(product.id)">Delete</button></td>
             </tr>
           </tbody>
         </table>
@@ -85,6 +91,7 @@ Product
          products : [],
          categories : [],
          product : {},
+         productcategory:[],
          name: '',
          file :'',
 
@@ -96,21 +103,33 @@ Product
              axios
                 .get('/api/products')
                 .then(response => {
-                    
+
                     this.categories = response.data.categories;
+                    this.products = response.data.products;
+
+
 
                    });
                },
-               
+
         methods:{
                onChange(e) {
-                   
+
                 this.file= e.target.files[0];
                 console.log(this.file)
-                
+
             },
-            
-               
+
+             addTag (newTag) {
+      const tag = {
+        name: newTag,
+        code: newTag.substring(0, 2) + Math.floor((Math.random() * 10000000))
+      }
+      this.options.push(tag)
+      this.value.push(tag)
+    }
+
+
 
             addProduct(e){
                  const config = {
@@ -122,16 +141,42 @@ Product
                  data.append('image', this.file);
                  data.append('name',this.product.name);
                 axios.post('api/products',data,config)
-                 .then(function (res) {
-                        existingObj.success = res.data.success;
+                 .then(data => {
+
+                        this.$toaster.success('Product Added.')
                     })
-                    .catch(function (err) {
-                        existingObj.output = err;
+                    .catch(err => {
+                     if (err.response.status = 422) {
+                         var errors = err.response.data.errors;
+
+
+
+                         for (const [key, value] of Object.entries(err.response.data.errors)) {
+  this.$toaster.success(value);
+}
+
+}
                     });
+            },
+              deleteProduct(id) {
+                 axios
+                    .delete(`/api/products/${id}`)
+                    .then(response => {12
+                        let i = this.products.map(data => data.id).indexOf(id);
+                        this.products.splice(i, 1)
+                         this.$toaster.success('Product Deleted.')
+
+                    })
+                    .catch(err =>{
+                      if (err.response.status = 422) {
+             console.log(err.response.data);
+}
+
+                    })
             }
 
-         
-          
+
+
    },
 
 

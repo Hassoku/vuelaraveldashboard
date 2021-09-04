@@ -13,7 +13,11 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import feather from 'vue-icon'
 import vSelect from 'vue-select'
-import VueToastr from "vue-toastr";
+import Toaster from 'v-toaster'
+
+// You need a specific loader for CSS files like https://github.com/webpack/css-loader
+import 'v-toaster/dist/v-toaster.css'
+import Multiselect from 'vue-multiselect'
 
 // import ViewUI from 'view-design';
 // import 'view-design/dist/styles/iview.css';
@@ -28,6 +32,7 @@ import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 // // Import Bootstrap an BootstrapVue CSS files (order is important)
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import VueNotification from "@kugatsu/vuenotification";
 
 // // Make BootstrapVue available throughout your project
 Vue.use(BootstrapVue)
@@ -37,7 +42,9 @@ Vue.use(BootstrapVue)
 Vue.use(VueRouter);
 Vue.use(feather, 'v-icon')
 Vue.component('v-select', vSelect)
-Vue.use(VueToastr);
+Vue.component('multiselect', Multiselect)
+
+
 
 
 /**
@@ -53,7 +60,7 @@ Vue.use(VueToastr);
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 import 'vue-select/dist/vue-select.css';
-
+Vue.use(Toaster, { timeout: 5000 })
 
 var routes = [{
         path: '/',

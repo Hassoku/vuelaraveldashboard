@@ -70,7 +70,8 @@ Tags
 
                axios.post('/api/tags', this.tag)
                     .then(function (response) {
-                          this.$toastr.s("SUCCESS MESSAGE", "Success Toast Title");
+                         this.$toaster.success('Tag Added.')
+
                          })
                     .catch(function (error) {
                             console.log(error);

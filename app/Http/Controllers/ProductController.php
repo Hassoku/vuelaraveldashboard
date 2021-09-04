@@ -17,9 +17,9 @@ class ProductController extends Controller
     public function index()
     {
         $data = [];
-        // $products = Product::with('categories')->get();
+        $products = Product::with('categories')->get();
         $categories = Category::all();
-        // $data['products'] = $products;
+        $data['products'] = $products;
         $data['categories'] = $categories;
         return response()->json($data);
     }
@@ -125,8 +125,8 @@ class ProductController extends Controller
     {
         $product = Product::with('categories')->find($product->id);
         $product->categories()->detach();
-        $product->forceDelete();
-        if($product){
+       $deleted = $product->forceDelete();
+        if($deleted){
             return response()->json(['success'=>'Product Successfully Deleted!']);
                     }else{
 
